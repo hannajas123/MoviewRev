@@ -76,17 +76,21 @@ WSGI_APPLICATION = 'my_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'movie_review',
-        'USER':'root',
-        'PASSWORD':'add your data base password here',
-        'HOST':'localhost',
-        'PORT':'3306',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'movie_review',
+#         'USER':'root',
+#         'PASSWORD':'add your data base password here',
+#         'HOST':'localhost',
+#         'PORT':'3306',
+#     }
+# }
 
+import dj_database_url
+DATABASES = {
+    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
