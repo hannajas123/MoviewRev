@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Review</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f4;
+      color: #111;
+    }
+
+    header {
+      background-color: #222;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .search-box input {
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: none;
+      width: 240px;
+    }
+
+    .swiper-container {
+      width: 100%;
+      height: 60vh;
+    }
+
+    .swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-slide img {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+  height: 100%;
+  object-fit: cover;
+}
+    .section {
+      padding: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .section-header a {
+      color: crimson;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .movie-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 16px;
+    }
+
+    .movie-card {
+      min-width: 220px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+    }
+
+    .info {
+      padding: 10px;
+    }
+
+    .movie-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .genres {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .director {
+      font-size: 13px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .movie-row::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .movie-row::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+    }
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: none;
+      width: 240px;
+    }
+
+    .search-suggestions {
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ccc;
+      width: 260px;
+      top: 40px;
+      right: 0;
+      z-index: 999;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: none;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      color: #111;
+    }
+
+    .search-result-item img {
+      width: 40px;
+      height: 60px;
+      object-fit: cover;
+      margin-right: 10px;
+      border-radius: 4px;
+    }
+
+    .search-result-item:hover {
+      background-color: #f0f0f0;
+    }
+    .user-icon {
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.user-icon:hover {
+  color: #ddd;
+}
+  </style>
+</head>
+<body>
+    <header>
+        <h1>Movie Review</h1>
+      
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search movies..." autocomplete="off" />
+            <div id="suggestionBox" class="search-suggestions"></div>
+          </div>
+      
+          <!-- User icon after search box -->
+           <a href="/view_profile_page/"><i class="fa-regular fa-circle-user user-icon"></i></a>
+          
+        </div>
+      </header>
+<br>
+<br>
+  <!-- Swiper -->
+   {% if slider_photo %}
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+        {% for photo in slider_photo %}
+        <div class="swiper-slide">
+            <img src="{{photo.url}}" alt="Slide Image">
+          </div>
+         {% endfor %}
+    </div>
+
+    <!-- Navigation buttons -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+    <!-- <div class="swiper-pagination"></div> -->
+    
+  </div>
+{% endif %}
+  
+  <!-- Liked Movies -->
+   {% if liked %}
+  <div class="section">
+    <div class="section-header">
+      <h2>Liked Movies</h2>
+      <a href="/view_liked_movie_page/">See All ›</a>
+    </div>
+    
+    <div class="movie-row">
+        {% for movie in liked  %}
+      <div class="movie-card" onclick="window.location='/movie_details_page/{{movie.id}}'">
+        <img src="{{movie.photo.url}}" alt="Sarkeet Poster">
+        <div class="info">
+          <div class="movie-title">{{movie.name}}</div>
+          <div class="genres">{{movie.categories_tags}}</div>
+          <div class="director">{{movie.director}}</div>
+        </div>
+      </div>
+      {% endfor %}
+      <!-- Repeat as needed -->
+    </div>
+  </div>
+  {% endif %}
+
+
+<!-- Recommended Movies -->
+{% if recomanded %}
+<div class="section">
+  <div class="section-header">
+    <h2>Recommended Movies</h2>
+    <a href="#">See All ›</a>
+  </div>
+  <div class="movie-row">
+      {% for movie in recomanded %}
+    <div class="movie-card" onclick="window.location='/movie_details_page/{{movie.id}}'">
+      <img src="{{ movie.photo.url }}" alt="Thudarum Poster">
+      <div class="info">
+        <div class="movie-title">{{movie.name}}</div>
+        <div class="genres">{{movie.categories_tags}}</div>
+        <div class="director">{{movie.director}}</div>
+      </div>
+    </div>
+    {% endfor %}
+    
+  </div>
+</div>
+{% endif %}
+
+
+  <!-- Latest Movies -->
+   {% if latest %}
+  <div class="section">
+    <div class="section-header">
+      <h2>Latest Movies</h2>
+      <a href="/view_latest_movie_page/">See All ›</a>
+    </div>
+    <div class="movie-row">
+        {% for movie in latest %}
+      <div class="movie-card" onclick="window.location='/movie_details_page/{{movie.id}}'">
+        <img src="{{movie.photo.url}}" alt="Sarkeet Poster">
+        <div class="info">
+
+          <div class="movie-title">{{movie.name}}</div>
+          <div class="genres">{{movie.categories_tags}}</div>
+          <div class="director">{{movie.director}}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <form action="">
+    {% csrf_token %}
+  </form>
+{% endif %}
+{{ old_searches|json_script:"old-searches-data" }}
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+  <script>
+    new Swiper('.swiper-container', {
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      autoplay: {
+        delay: 3500,
+        disableOnInteraction: false,
+      },
+    });
+
+    const input = document.getElementById('searchInput');
+  const suggestionBox = document.getElementById('suggestionBox');
+
+  const oldSearches = JSON.parse(document.getElementById('old-searches-data').textContent);
+  
+
+  input.addEventListener('focus', () => {
+    
+    if (oldSearches.length > 0 || input.value.trim() === '') {
+        
+      renderOldSearches(oldSearches);
+    }
+  });
+
+  input.addEventListener('input', () => {
+    
+    const query = input.value.trim();
+    console.log("User:", query);
+    if (query === '') {
+      suggestionBox.innerHTML = '';
+      suggestionBox.style.display = 'none';
+      return;
+    }
+    $.ajax({
+                type: 'POST',
+                url: '/search_movie/',
+                data: {
+                "search":query,    
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(data) {
+                    suggestionBox.innerHTML = '';
+                    if (data.results.length > 0) {
+                    data.results.forEach(movie => {
+                    const div = document.createElement('div');
+                    div.className = 'search-result-item';
+                    div.innerHTML = ` <img src="${movie.image}" alt="${movie.name}"><span>${movie.name}</span>`;
+                    div.onclick = () => {window.location.href = `/movie_details_page/${movie.id}`;
+                   };
+                   suggestionBox.appendChild(div);
+                  });
+                   suggestionBox.style.display = 'block';
+                  } else {
+                  suggestionBox.style.display = 'none';
+                  } 
+             }
+            });
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const query = input.value.trim();
+      if (query !== '') {
+        window.location.href = `/view_search_result_page/${encodeURIComponent(query)}/`;
+      }
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!input.contains(e.target) && !suggestionBox.contains(e.target)) {
+      suggestionBox.style.display = 'none';
+    }
+  });
+
+  window.addEventListener('scroll', () => {
+    suggestionBox.style.display = 'none';
+  });
+
+  function renderOldSearches(history) {
+    suggestionBox.innerHTML = '';
+    history.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'search-result-item';
+      div.innerHTML = `<span style="margin-left:10px;">${item}</span>`;
+      div.onclick = () => {
+        input.value = item;
+        suggestionBox.style.display = 'none';
+        input.dispatchEvent(new Event('input'));
+      };
+      suggestionBox.appendChild(div);
+    });
+    suggestionBox.style.display = 'block';
+  }
+  </script>
+</body>
+</html>

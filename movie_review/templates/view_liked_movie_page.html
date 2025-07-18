@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+      <style>
+         h1 {
+          text-align: center;
+          color: #333;
+        }
+        .movie-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      max-width: 800px;
+      margin: 20px auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      background-color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    .movie-poster {
+      width: 60px;
+      height: 90px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+    .movie-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .movie-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .movie-info {
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: #444;
+    }
+    .label {
+      font-weight: bold;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+   
+    <h1> Liked Movies</h1>
+   {% for movie in movies %}
+    <div class="movie-container" onclick="window.location='/movie_details_page/{{movie.id}}/'">
+        <img class="movie-poster" src="{{ movie.photo.url }}" alt="Show Me Your Glory Poster">
+        <div class="movie-details">
+          <div class="movie-title">{{movie.name}}</div>
+          <div class="movie-info"><span class="label">Director:</span> {{movie.director}}</div>
+          <div class="movie-info"><span class="label">Actors:</span> {{movie.actors}}</div>
+        </div>
+      </div>
+      {% empty %}
+      <h1>No record found </h1>
+      {% endfor %}
+
+</body>
+</html>

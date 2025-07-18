@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>movie details page</title>
+   
+    <style>
+        body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: #f4f4f4;
+          margin: 0;
+          padding: 20px;
+        }
+    
+        .movie-card {
+          background: #fff;
+          max-width: 900px;
+          margin: auto;
+          border-radius: 10px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          padding: 20px;
+        }
+    
+        .movie-header {
+          display: flex;
+          gap: 20px;
+        }
+    
+        .movie-poster {
+          flex: 0 0 200px;
+        }
+    
+        .movie-poster img {
+          width: 100%;
+          border-radius: 10px;
+        }
+    
+        .movie-info {
+          flex: 1;
+        }
+    
+        .movie-info h2 {
+          margin-top: 0;
+        }
+    
+        .tags span {
+          background-color: #e0e0e0;
+          border-radius: 4px;
+          padding: 4px 8px;
+          margin-right: 5px;
+          font-size: 14px;
+        }
+    
+        .like-dislike {
+          margin-top: 10px;
+        }
+    
+        .like-dislike button {
+          padding: 6px 12px;
+          margin-right: 10px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 14px;
+        }
+    
+        .like-btn { background-color: #4caf50; color: white; }
+        .dislike-btn { background-color: #f44336; color: white; }
+    
+        .section {
+          margin-top: 30px;
+        }
+    
+        .rating-display {
+          font-size: 18px;
+          color: #333;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+    
+        .add-rating-btn {
+          padding: 6px 12px;
+          font-size: 14px;
+          background-color: #2196f3;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+    
+        .review-list {
+          margin-top: 25px;
+          background: #fafafa;
+          padding: 15px;
+          border-radius: 5px;
+        }
+    
+        .review-item {
+          border-bottom: 1px solid #ddd;
+          padding: 10px 0;
+        }
+    
+        .review-item:last-child {
+          border-bottom: none;
+        }
+    
+        .review-item img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+    
+        .review-item p {
+          margin: 5px 0;
+        }
+    
+        form textarea {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          font-size: 15px;
+          margin-bottom: 10px;
+          outline: none;
+        }
+    
+        form button {
+          padding: 10px 20px;
+          border: none;
+          background-color: #2196f3;
+          color: white;
+          border-radius: 6px;
+          font-size: 15px;
+          cursor: pointer;
+        }
+    
+        /* Modal styles */
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 999;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0,0,0,0.5);
+        }
+    
+        .modal-content {
+          background: #fff;
+          margin: 10% auto;
+          padding: 20px;
+          width: 300px;
+          border-radius: 10px;
+          text-align: center;
+          position: relative;
+        }
+    
+        .close-btn {
+          position: absolute;
+          top: 10px;
+          right: 15px;
+          background: #aaa;
+          color: #fff;
+          border: none;
+          border-radius: 50%;
+          font-size: 16px;
+          width: 25px;
+          height: 25px;
+          cursor: pointer;
+        }
+    
+        .rating-slider input[type="range"] {
+          width: 100%;
+        }
+    
+        .rating-value {
+          font-size: 18px;
+          font-weight: bold;
+          margin-top: 10px;
+        }
+        .save-btn {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 20px;
+  display: block;
+  text-align: center;
+  width: 100%;
+  transition: color 0.3s;
+}
+
+.save-btn:hover {
+  color: #000;
+}
+.saved-btn {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 20px;
+  display: block;
+  text-align: center;
+  width: 100%;
+  transition: color 0.3s;
+}
+
+.saved-btn:hover {
+  color: #000;
+}
+      </style>
+</head>
+<body>
+  
+    <div class="movie-card">
+        <div class="movie-header">
+          <div class="movie-poster">
+            <img src="{{movie.photo.url}}" alt="Movie Poster" />
+            {% if is_saved %}
+            <button class="saved-btn" title="Save">
+                <i class="fa-solid fa-bookmark"></i>
+              </button>
+              {% else %}
+            <button class="save-btn" title="Save">
+                <i class="fa-regular fa-bookmark"></i>
+              </button>
+              {% endif %}
+          </div>
+          <div class="movie-info">
+            <h2>Inception</h2>
+            <p><strong>Language:</strong> {{movie.name}}</p>
+            <p><strong>Release Date:</strong> {{movie.release_date}}</p>
+            <p><strong>Actors:</strong> {{movie.actors}}</p>
+            <p><strong>Director:</strong> {{movie.director}}</p>
+            <p><strong>Writer:</strong> {{movie.writer}}</p>
+            <p><strong>Description:</strong> {{movie.discription}}</p>
+            <div class="tags">
+            {% for tag in movie.categories_tags  %}
+              <span>{{tag}}</span>
+              {% empty %}
+              <span>no tags</span>
+            {% endfor%}
+            </div>
+      
+            <div class="rating-display">
+              <span ><strong>Average Rating:</strong><span id="avg-rating">{{rating}}</span></span>
+              <button class="add-rating-btn" onclick="document.getElementById('ratingModal').style.display='block'">Add Rating</button>
+            </div>
+      
+            <div class="like-dislike">
+              <button class="like-btn"id="like-btn">👍 Like (<span id="likes-count">{{likes}}</span>)</button>
+              <button class="dislike-btn" id="dislike-btn">👎 Dislike (<span id="dislikes-count">{{dislikes}}</span>)</button>
+            </div>
+          </div>
+        </div>
+      
+        <div class="section">
+          <h3>Write a Review</h3>
+          <form action="/add_review/{{movie.id}}/" method="POST">
+            {% csrf_token %}
+            <textarea name="review" rows="4" placeholder="Write your review..." required></textarea>
+            <button type="submit">Submit Review</button>
+          </form>
+        </div>
+      
+        <div class="review-list">
+          <h3>User Reviews</h3>
+          {% for review in reviews %}
+          <div class="review-item">
+            <div style="display: flex; align-items: flex-start; gap: 10px;">
+              <img src="{{review.user.photo.url}}" alt="John">
+              <div onclick="window.location='/view_user_profile_page/{{review.user.id}}/'">
+                <p><strong>{{review.user.name}}</strong> • <small style="color: gray;">{{review.time|timesince}} ago</small></p>
+                <p>{{review.review}}</p>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <h1>No one reviews the movie. </h1>
+          {% endfor %} 
+          
+          
+        </div>
+      </div>
+     
+      
+      <!-- Rating Modal -->
+      <div id="ratingModal" class="modal">
+        <div class="modal-content">
+          <button class="close-btn" onclick="document.getElementById('ratingModal').style.display='none'">&times;</button>
+          <h3>Rate This Movie</h3>
+          <form id="ratingForm">
+            {% csrf_token %}
+            <div class="rating-slider">
+              <input type="range" min="1" max="10" value="5" id="ratingSlider" name="rating">
+              <div class="rating-value">Rating: <span id="sliderValue">5</span>/10</div>
+            </div>
+            <br>
+            <button type="submit" class="add-rating-btn">Submit Rating</button>
+          </form>
+        </div>
+      </div>
+      
+      <script>
+        $('#like-btn').click(function(){
+
+            $.ajax({
+                type: 'POST',
+                url: '/add_like/',
+                data: {
+                'id': '{{movie.id}}',    
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if(response.status_code==201){
+                        $('#likes-count').text(response.likes);
+                        $('#dislikes-count').text(response.dislikes);
+                    }
+                    else if(response.status_code==202){
+                        alert("movie already liked");
+                    }
+                    else{
+                        window.location.href="/login_page/";
+                    }
+                     
+             }
+            });
+        });
+
+        $('#dislike-btn').click(function(){
+
+          $.ajax({
+               type: 'POST',
+               url: '/add_dislike/',
+               data: {
+                 'id': '{{movie.id}}',    
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+               },
+                success: function(response) {
+                    if(response.status_code==201){
+                        $('#likes-count').text(response.likes);
+                        $('#dislikes-count').text(response.dislikes);
+                    }
+                    else if(response.status_code==202){
+                        alert("movie already disliked");
+                    }
+                    else{
+                        window.location.href="/login_page/";
+                    }
+              }
+          });
+         });
+         const slider = document.getElementById("ratingSlider");
+        const sliderValue = document.getElementById("sliderValue");
+      
+        slider.addEventListener("input", function() {
+          sliderValue.innerText = slider.value;
+        });
+      
+        window.onclick = function(event) {
+          const modal = document.getElementById('ratingModal');
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+         $('#ratingForm').submit(function(e){
+            e.preventDefault();
+            $.ajax({
+                type:'POST',
+                url:'/add_rating/',
+                data:{
+                    'rating':$('#ratingSlider').val(),
+                    'id': '{{movie.id}}',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function (response){
+                    if(response.status_code==201){
+                    $('#avg-rating').text(response.rating);
+                    const modal = document.getElementById('ratingModal');
+                    modal.style.display = "none";
+                }
+                    else{
+                        alert("please login");
+                        window.location.href="/login_page/";
+                    }
+                }
+            })
+            
+         });
+        function likeMovie() {
+          let likes = document.getElementById('likes-count');
+          likes.innerText = parseInt(likes.innerText) + 1;
+        }
+      
+        function dislikeMovie() {
+          let dislikes = document.getElementById('dislikes-count');
+          dislikes.innerText = parseInt(dislikes.innerText) + 1;
+        }
+         document.addEventListener('DOMContentLoaded', () => {
+         const saveBtn = document.querySelector('.save-btn');
+        saveBtn.addEventListener('click', () => {
+          const icon = saveBtn.querySelector('i');
+         icon.classList.toggle('fa-regular');
+          icon.classList.toggle('fa-solid');
+          $.ajax({
+                type:'POST',
+                url:'/add_or_remove_save/',
+                data:{
+                    'movie_id': '{{movie.id}}',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function (response){
+                    if(response.status_code==201){
+                        alert(response.message);
+                    }else{
+                        alert("please login");
+                        window.location.href="/login_page/";  
+                    }
+                }
+            })
+     });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+         const savedBtn = document.querySelector('.saved-btn');
+        savedBtn.addEventListener('click', () => {
+          const icon = savedBtn.querySelector('i');
+          icon.classList.toggle('fa-solid');
+         icon.classList.toggle('fa-regular');
+         $.ajax({
+                type:'POST',
+                url:'/add_or_remove_save/',
+                data:{
+                    'movie_id': '{{movie.id}}',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function (response){
+                    if(response.status_code==201){
+                        alert(response.message);
+                    }else{
+                        alert("please login");
+                        window.location.href="/login_page/";  
+                    }
+                }
+            })
+        
+     });
+    });
+       
+      </script>
+</body>
+</html>

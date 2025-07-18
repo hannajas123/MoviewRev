@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View user profile</title>
+    <style>
+        body {
+          margin: 0;
+          background-color: white;
+          font-family: Arial, sans-serif;
+          color: black;
+        }
+        .profile-container {
+         background-color: #1e1e1e;
+         display: flex;
+         align-items: center;
+         padding: 40px;
+        }
+
+        .profile-image {
+         width: 180px;
+         height: 180px;
+         border-radius: 50%;
+         object-fit: cover;
+         margin-right: 30px;
+         border: 3px solid #444;
+        }
+
+        .profile-info {
+         display: flex;
+         flex-direction: column;
+         color: white;
+        }
+
+.username {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.logout-button {
+  margin-left: auto;
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.forget-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+
+.logout-button:hover {
+  background-color: #c0392b;
+}
+        .join-date {
+          font-size: 20px;
+          color: #ccc;
+          display: flex;
+          align-items: center;
+          margin-bottom: 15px;
+        }
+        .calendar-icon {
+          width: 20px;
+          height: 20px;
+          background-color: #ccc;
+          mask: url('https://www.svgrepo.com/show/512317/calendar.svg') no-repeat center;
+          mask-size: contain;
+          -webkit-mask: url('https://www.svgrepo.com/show/512317/calendar.svg') no-repeat center;
+          -webkit-mask-size: contain;
+          margin-right: 8px;
+        }
+        .bio {
+          font-size: 24px;
+          color: #eee;
+        }
+        .section {
+      padding: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .section-header a {
+      color: crimson;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .movie-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 16px;
+    }
+
+    .movie-card {
+      min-width: 220px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+    }
+
+    .info {
+      padding: 10px;
+    }
+
+    .movie-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .genres {
+      font-size: 14px;
+      color: #666;
+    }
+    .rate {
+      font-size: 14px;
+      color: green;
+
+    }
+    .director {
+      font-size: 13px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .movie-row::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .movie-row::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+    }
+    .review-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      max-width: 800px;
+      margin-bottom: 20px;
+      margin-left: 20px;
+      display: flex;
+      gap: 20px;
+      
+    }
+
+    .movie-poster {
+      width: 100px;
+      height: 140px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .review-content {
+      flex: 1;
+    }
+
+    .movie-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .review-date {
+      font-size: 14px;
+      color: #4CAF50;
+      margin-bottom: 15px;
+    }
+
+    .review-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333;
+    }
+      </style>
+</head>
+<body>
+    <div class="profile-container">
+        <img src="{{user.photo.url}}" alt="Profile Picture" class="profile-image" />
+        
+        <div class="profile-info">
+          <div class="username">{{user.name}}</div>
+        </div>
+      
+        <!-- Logout button -->
+        <button class="logout-button" onclick="window.location.replace('/logout/')">Logout</button>
+        <button class="forget-button" onclick="window.location.href='/forget_password/'">Forgot Password</button>
+      </div>
+      <br>
+      <br>
+{% if liked or rate or reviewed %}      
+      <!-- Liked Movies -->
+   {% if liked %}
+   <div class="section">
+     <div class="section-header">
+       <h2>Liked Movies</h2>
+       <a href="/view_user_liked_movie/{{user.id}}/">See All ›</a>
+     </div>
+     
+     <div class="movie-row">
+         {% for movie in liked  %}
+       <div class="movie-card" onclick="window.location='/movie_details_page/{{movie.id}}'">
+         <img src="{{movie.photo.url}}" alt="Sarkeet Poster">
+         <div class="info">
+           <div class="movie-title">{{movie.name}}</div>
+           <div class="genres">{{movie.categories_tags}}</div>
+           <div class="director">{{movie.director}}</div>
+         </div>
+       </div>
+       {% endfor %}
+       <!-- Repeat as needed -->
+     </div>
+   </div>
+   {% endif %}
+
+   {% if rated %}
+   <div class="section">
+     <div class="section-header">
+       <h2>Rated Movies</h2>
+       <a href="/view_user_rated_movie_page/{{user.id}}/">See All ›</a>
+     </div>
+     
+     <div class="movie-row">
+         {% for rate in rated  %}
+       <div class="movie-card" onclick="window.location='/movie_details_page/{{rate.movie.id}}'">
+         <img src="{{rate.movie.photo.url}}" alt="Sarkeet Poster">
+         <div class="info">
+           <div class="movie-title">{{rate.movie.name}}</div>
+           <div class="genres">{{rate.movie.categories_tags}}</div>
+           <div class="director">{{rate.movie.director}}</div>
+           <div class="rate">{{rate.rate}} is rated</div>
+         </div>
+       </div>
+       {% endfor %}
+       <!-- Repeat as needed -->
+     </div>
+   </div>
+   {% endif %}
+ {% if reviewed %}
+ <div class="section">
+    <div class="section-header">
+      <h2>Reviewed Movies</h2>
+      <a href="/view_liked_movie_page/">See All ›</a>
+    </div>
+    
+    {% for review in reviewed %}
+    
+   <div class="review-card">
+    <img src="{{review.movie.photo.url}}" alt="Padakkalam Poster" class="movie-poster" />
+    <div class="review-content">
+      <div class="movie-title">{{review.movie.name}}</div>
+      <div class="review-date">{{review.time}}</div>
+      <div class="review-text">
+        {{review.review}}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+ </div>
+  {% endif %}
+{% else %}
+<h1>user not review or like any movie </h1>  
+{% endif %}
+</body>
+</html>

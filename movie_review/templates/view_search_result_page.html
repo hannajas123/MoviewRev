@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background: #fff;
+          padding: 20px;
+        }
+        /* h1{
+            text-align: center;
+        } */
+        h2 {
+          font-size: 2em;
+          border-left: 5px solid gold;
+          padding-left: 10px;
+          margin-bottom: 20px;
+        }
+        .movie-list {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          max-width: 600px;
+          
+          
+        }
+        .movie {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          border-bottom: 1px solid #ccc;
+          padding-bottom: 15px;
+        }
+        .movie img {
+          width: 60px;
+          height: 90px;
+          object-fit: cover;
+          border-radius: 5px;
+        }
+        .movie-details {
+          display: flex;
+          flex-direction: column;
+        }
+        .movie-title {
+          font-weight: bold;
+          font-size: 1.2em;
+        }
+        .movie-actors {
+          color: #555;
+        }
+      </style>
+</head>
+<body>
+    <h1>Search  "{{search}}"</h1>
+    {% if movies or movie_with_search_tage %}
+    <br><br>
+    {% if movies %}
+    <h2>Titles</h2>
+    <div class="movie-list">
+      {% for movie in movies %}
+      <div class="movie">
+        <img src="{{movie.photo.url}}" alt="Thudarum 2025">
+        <div class="movie-details">
+          <div class="movie-title">{{movie.name}}</div>
+          <div class="movie-actors">{{movie.actors}}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if movie_with_search_tage %}
+    <div class="movie-list">
+        <h2>Movie with tag</h2>
+        {% for movie in movie_with_search_tage %}
+      <div class="movie">
+        <img src="{{movie.photo.url}}" alt="Thudarum... 2020">
+        <div class="movie-details">
+          <div class="movie-title">{{movie.name}}</div>
+          <div class="movie-actors">{{movie.categories_tags}}</div>
+          <div class="movie-actors">{{movie.actors}}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <h1>No recourd found</h1>
+    {% endif %}
+</body>
+</html>

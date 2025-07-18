@@ -1,0 +1,6 @@
+Django==5.2
+Pillow==9.5.0
+gunicorn
+mysqlclient>=2.2.0
+dj-database-url== 0.4.1
+psycopg2-binary==2.9.8
